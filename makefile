@@ -1,16 +1,20 @@
 CC=gcc
-CFLAGS=-lm
+CFLAGS=-lm -l aubio
+
+objects = $(patsubst %.c,%.o,$(wildcard *.c))
+objects-input = $(patsubst input/%.c,%.o,$(wildcard input/*.c))
 
 all: build clean
 
-build: main.o arg_parser.o
-	$(CC) -o x2sbf main.o arg_parser.o $(CFLAGS)
+build: build-input
+	$(CC) -c $(wildcard *.c)
+	$(CC) -o x2sbf $(objects) $(objects-input) $(CFLAGS)
 
-main.o:
-	$(CC) -c main.c
-
-arg_parser.o:
-	$(CC) -c arg_parser.c
+build-input:
+	$(CC) -c $(wildcard input/*.c)
 
 clean:
 	rm -f *.o
+
+rm: clean
+	rm -f x2sbf
